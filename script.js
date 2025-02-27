@@ -91,14 +91,18 @@ const sensorChart = new Chart(ctx, {
         responsive: true,
         maintainAspectRatio: false, // Prevents auto-stretching
         scales: {
-            x: { title: { display: true, text: "Time" } },
+            x: { 
+                title: { display: true, text: "Time" }
+            },
             y: { 
                 title: { display: true, text: "Value" },
-                min: 20, // Set lower bound (Adjust based on your data range)
-                max: 80, // Set upper bound (Adjust based on your data range)
-                ticks: { stepSize: 5 } // Keep labels evenly spaced
+                min: 20,  // FIXED LOWER LIMIT (adjust as needed)
+                max: 80,  // FIXED UPPER LIMIT (adjust as needed)
+                ticks: { stepSize: 5 }, // Ensures labels are evenly spaced
+                beginAtZero: false
             }
-        }
+        },
+        animation: false // Disables any animations that might cause movement
     }
 });
 
@@ -112,5 +116,5 @@ function updateChart() {
 }
 
 // Fetch data every 30 seconds
-setInterval(fetchData, 15000);
+setInterval(fetchData, 30000);
 fetchData();
