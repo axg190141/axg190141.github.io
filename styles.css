@@ -24,7 +24,15 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Set a fixed size for the chart */
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    height: 400px; /* Fixed height */
+    margin: auto;
+}
+
 canvas {
-    max-width: 100%;
-    margin-top: 20px;
+    width: 100% !important;
+    height: 100% !important;
 }
