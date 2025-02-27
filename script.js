@@ -12,29 +12,34 @@ async function fetchData() {
         const csvText = await response.text();
         const rows = csvText.trim().split("\n").slice(1); // Remove header row
 
-        // Clear arrays
+        // Clear arrays before updating
         timestamps = [];
         tempCData = [];
         tempFData = [];
         humidityData = [];
 
         rows.forEach(row => {
-            // Properly split CSV by comma, ensuring it captures all 5 columns
-            let columns = row.split(",").map(item => item.trim());
+            // Split the CSV line properly while preserving data integrity
+            let columns = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g); 
+            
+            if (columns && columns.length >= 5) { // Ensure all 5 values are present
+                const timestamp = columns[0].trim();  // Column A: Timestamp
+                const sensor = columns[1].trim();     // Column B: Sensor Name
+                const tempC = parseFloat(columns[2].trim()); // Column C: TempC
+                const tempF = parseFloat(columns[3].trim()); // Column D: TempF
+                const humidity = parseFloat(columns[4].trim()); // Column E: Humidity%
 
-            if (columns.length >= 5) { // Ensure all 5 values are present
-                const timestamp = columns[0];  // Column A: Timestamp
-                const sensor = columns[1];     // Column B: Sensor Name
-                const tempC = parseFloat(columns[2]); // Column C: TempC
-                const tempF = parseFloat(columns[3]); // Column D: TempF
-                const humidity = parseFloat(columns[4]); // Column E: Humidity%
-
-                timestamps.push(timestamp);
-                tempCData.push(tempC);
-                tempFData.push(tempF);
-                humidityData.push(humidity);
+                // Check if parsed values are valid numbers
+                if (!isNaN(tempC) && !isNaN(tempF) && !isNaN(humidity)) {
+                    timestamps.push(timestamp);
+                    tempCData.push(tempC);
+                    tempFData.push(tempF);
+                    humidityData.push(humidity);
+                } else {
+                    console.warn("Skipping row due to invalid number:", columns);
+                }
             } else {
-                console.warn("Skipping row due to missing data:", columns);
+                console.warn("Skipping row due to missing columns:", columns);
             }
         });
 
