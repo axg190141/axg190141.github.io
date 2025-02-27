@@ -103,13 +103,13 @@ const sensorChart = new Chart(ctx, {
         },
         y: { 
             title: { display: true, text: "Value" },
-            min: 10,  // 🚀 Completely locks the lower bound of Y-axis
-            max: 50,  // 🚀 Completely locks the upper bound of Y-axis
+            min: 5,  // Completely locks the lower bound of Y-axis
+            max: 100,  // Completely locks the upper bound of Y-axis
             ticks: { stepSize: 5 }, // Keeps labels evenly spaced
             beginAtZero: false  // Ensures values don't start from zero if unnecessary
             }
         },
-    animation: false // ❌ Prevents animations from shifting the chart
+    animation: false // Prevents animations from shifting the chart
     }
 });
 
