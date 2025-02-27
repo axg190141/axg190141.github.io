@@ -1,0 +1,30 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f1e9; /* Warm Earth Tone */
+    color: #4e4b42; /* Dark Brown */
+    padding: 20px;
+}
+
+h1 {
+    color: #8b5e3b; /* Clay */
+}
+
+.container {
+    background: #ffffff; /* White Background */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+}
+
+.latest-data {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+canvas {
+    max-width: 100%;
+    margin-top: 20px;
+}
