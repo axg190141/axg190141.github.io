@@ -19,20 +19,22 @@ async function fetchData() {
         humidityData = [];
 
         rows.forEach(row => {
-            // Ensure correct CSV splitting by handling spaces and trimming
+            // Properly split CSV by comma, ensuring it captures all 5 columns
             let columns = row.split(",").map(item => item.trim());
 
-            if (columns.length >= 5) { // Ensure there are enough columns
-                const timestamp = columns[0];
-                const sensor = columns[1];
-                const tempC = parseFloat(columns[2]);
-                const tempF = parseFloat(columns[3]);
-                const humidity = parseFloat(columns[4]);
+            if (columns.length >= 5) { // Ensure all 5 values are present
+                const timestamp = columns[0];  // Column A: Timestamp
+                const sensor = columns[1];     // Column B: Sensor Name
+                const tempC = parseFloat(columns[2]); // Column C: TempC
+                const tempF = parseFloat(columns[3]); // Column D: TempF
+                const humidity = parseFloat(columns[4]); // Column E: Humidity%
 
                 timestamps.push(timestamp);
                 tempCData.push(tempC);
                 tempFData.push(tempF);
                 humidityData.push(humidity);
+            } else {
+                console.warn("Skipping row due to missing data:", columns);
             }
         });
 
