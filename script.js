@@ -96,13 +96,13 @@ const sensorChart = new Chart(ctx, {
     },
     options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
         scales: {
             x: { title: { display: true, text: "Time" } },
             y: { 
                 title: { display: true, text: "Value" },
                 suggestedMin: 0, // Ensures values scale properly
-                suggestedMax: 100
+                suggestedMax: 50
             }
         }
     }
