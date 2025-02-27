@@ -11,20 +11,29 @@ async function fetchData() {
         const response = await fetch(SHEET_URL);
         const csvText = await response.text();
         const rows = csvText.trim().split("\n").slice(1); // Remove header row
-        
+
         // Clear arrays
         timestamps = [];
         tempCData = [];
         tempFData = [];
         humidityData = [];
-        
-        rows.forEach(row => {
-            const [timestamp, sensor, tempC, tempF, humidity] = row.split(",");
 
-            timestamps.push(timestamp);
-            tempCData.push(parseFloat(tempC));
-            tempFData.push(parseFloat(tempF));
-            humidityData.push(parseFloat(humidity));
+        rows.forEach(row => {
+            // Ensure correct CSV splitting by handling spaces and trimming
+            let columns = row.split(",").map(item => item.trim());
+
+            if (columns.length >= 5) { // Ensure there are enough columns
+                const timestamp = columns[0];
+                const sensor = columns[1];
+                const tempC = parseFloat(columns[2]);
+                const tempF = parseFloat(columns[3]);
+                const humidity = parseFloat(columns[4]);
+
+                timestamps.push(timestamp);
+                tempCData.push(tempC);
+                tempFData.push(tempF);
+                humidityData.push(humidity);
+            }
         });
 
         updateLatestValues();
@@ -36,11 +45,13 @@ async function fetchData() {
 
 // Update latest values on page
 function updateLatestValues() {
-    document.getElementById("timestamp").innerText = timestamps[timestamps.length - 1] || "--";
-    document.getElementById("sensor_name").innerText = "DHT_SS";
-    document.getElementById("temp_c").innerText = tempCData[tempCData.length - 1] || "--";
-    document.getElementById("temp_f").innerText = tempFData[tempFData.length - 1] || "--";
-    document.getElementById("humidity").innerText = humidityData[humidityData.length - 1] || "--";
+    if (timestamps.length > 0) {
+        document.getElementById("timestamp").innerText = timestamps[timestamps.length - 1] || "--";
+        document.getElementById("sensor_name").innerText = "DHT_SS";
+        document.getElementById("temp_c").innerText = tempCData[tempCData.length - 1] || "--";
+        document.getElementById("temp_f").innerText = tempFData[tempFData.length - 1] || "--";
+        document.getElementById("humidity").innerText = humidityData[humidityData.length - 1] || "--";
+    }
 }
 
 // Initialize Chart.js
@@ -81,7 +92,11 @@ const sensorChart = new Chart(ctx, {
         maintainAspectRatio: false,
         scales: {
             x: { title: { display: true, text: "Time" } },
-            y: { title: { display: true, text: "Value" } }
+            y: { 
+                title: { display: true, text: "Value" },
+                suggestedMin: 0, // Ensures values scale properly
+                suggestedMax: 100
+            }
         }
     }
 });
