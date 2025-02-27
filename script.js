@@ -1,6 +1,9 @@
 // Replace with your Google Sheets CSV URL
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_NJpt4RIFw7gf3yv5xVeaZrxm_M3Rp5c6coe1HXcFiEt4HUEPo_MFD3PRLoHn1SlAuwQ1u9jBSJWh/pub?output=csv";
 
+// Replace with your Google Sheets CSV URL
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pub?output=csv";
+
 let timestamps = [];
 let tempCData = [];
 let tempFData = [];
@@ -19,27 +22,20 @@ async function fetchData() {
         humidityData = [];
 
         rows.forEach(row => {
-            // Split the CSV line properly while preserving data integrity
             let columns = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g); 
-            
-            if (columns && columns.length >= 5) { // Ensure all 5 values are present
-                const timestamp = columns[0].trim();  // Column A: Timestamp
-                const sensor = columns[1].trim();     // Column B: Sensor Name
-                const tempC = parseFloat(columns[2].trim()); // Column C: TempC
-                const tempF = parseFloat(columns[3].trim()); // Column D: TempF
-                const humidity = parseFloat(columns[4].trim()); // Column E: Humidity%
 
-                // Check if parsed values are valid numbers
+            if (columns && columns.length >= 5) { // Ensure all 5 values are present
+                const timestamp = columns[0].trim();
+                const tempC = parseFloat(columns[2].trim());
+                const tempF = parseFloat(columns[3].trim());
+                const humidity = parseFloat(columns[4].trim());
+
                 if (!isNaN(tempC) && !isNaN(tempF) && !isNaN(humidity)) {
                     timestamps.push(timestamp);
                     tempCData.push(tempC);
                     tempFData.push(tempF);
                     humidityData.push(humidity);
-                } else {
-                    console.warn("Skipping row due to invalid number:", columns);
                 }
-            } else {
-                console.warn("Skipping row due to missing columns:", columns);
             }
         });
 
@@ -96,13 +92,14 @@ const sensorChart = new Chart(ctx, {
     },
     options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // Prevents auto-stretching
         scales: {
             x: { title: { display: true, text: "Time" } },
             y: { 
                 title: { display: true, text: "Value" },
-                suggestedMin: 0, // Ensures values scale properly
-                suggestedMax: 100
+                min: 20, // Set lower bound (Adjust based on your data range)
+                max: 80, // Set upper bound (Adjust based on your data range)
+                ticks: { stepSize: 5 } // Keep labels evenly spaced
             }
         }
     }
@@ -118,5 +115,5 @@ function updateChart() {
 }
 
 // Fetch data every 30 seconds
-setInterval(fetchData, 30000);
+setInterval(fetchData, 15000);
 fetchData();
