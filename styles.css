@@ -30,6 +30,7 @@ h1 {
     max-width: 600px;
     height: 400px; /* Fixed height */
     margin: auto;
+    position: relative;
 }
 
 canvas {
