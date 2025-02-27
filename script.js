@@ -95,16 +95,21 @@ const sensorChart = new Chart(ctx, {
         ]
     },
     options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        scales: {
-            x: { title: { display: true, text: "Time" } },
-            y: { 
-                title: { display: true, text: "Value" },
-                suggestedMin: 0, // Ensures values scale properly
-                suggestedMax: 50
+    responsive: true,
+    maintainAspectRatio: true, // Keep the chart's fixed aspect ratio
+    scales: {
+        x: { 
+            title: { display: true, text: "Time" } 
+        },
+        y: { 
+            title: { display: true, text: "Value" },
+            min: 10,  // 🚀 Completely locks the lower bound of Y-axis
+            max: 50,  // 🚀 Completely locks the upper bound of Y-axis
+            ticks: { stepSize: 5 }, // Keeps labels evenly spaced
+            beginAtZero: false  // Ensures values don't start from zero if unnecessary
             }
-        }
+        },
+    animation: false // ❌ Prevents animations from shifting the chart
     }
 });
 
