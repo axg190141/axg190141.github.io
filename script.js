@@ -1,5 +1,7 @@
 // Replace with your Google Sheets CSV URL
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_NJpt4RIFw7gf3yv5xVeaZrxm_M3Rp5c6coe1HXcFiEt4HUEPo_MFD3PRLoHn1SlAuwQ1u9jBSJWh/pub?output=csv";
+// Replace with your Google Sheets CSV URL
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pub?output=csv";
 
 let timestamps = [];
 let tempCData = [];
@@ -91,18 +93,14 @@ const sensorChart = new Chart(ctx, {
         responsive: true,
         maintainAspectRatio: false, // Prevents auto-stretching
         scales: {
-            x: { 
-                title: { display: true, text: "Time" }
-            },
+            x: { title: { display: true, text: "Time" } },
             y: { 
                 title: { display: true, text: "Value" },
-                min: 20,  // FIXED LOWER LIMIT (adjust as needed)
-                max: 80,  // FIXED UPPER LIMIT (adjust as needed)
-                ticks: { stepSize: 5 }, // Ensures labels are evenly spaced
-                beginAtZero: false
+                min: 20, // Set lower bound (Adjust based on your data range)
+                max: 80, // Set upper bound (Adjust based on your data range)
+                ticks: { stepSize: 5 } // Keep labels evenly spaced
             }
-        },
-        animation: false // Disables any animations that might cause movement
+        }
     }
 });
 
