@@ -1,5 +1,5 @@
 // Replace with your Google Sheets CSV URL
-const SHEET_URL = "https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/mqtt_data.xlsx";
+const SHEET_URL = "https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/mqtt_data.csv";
 
 let timestamps = [];
 let tempCData = [];
