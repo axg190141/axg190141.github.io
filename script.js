@@ -123,5 +123,5 @@ function updateChart() {
 }
 
 // Fetch data every 30 seconds
-setInterval(fetchData, 30000);
+setInterval(fetchData, 10000);
 fetchData();
