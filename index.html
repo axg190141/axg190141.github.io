@@ -38,6 +38,8 @@
     
     <script>
         AWS.config.update({
+            accessKeyId: "YOUR_ACCESS_KEY",  // Replace with your AWS Access Key
+            secretAccessKey: "YOUR_SECRET_KEY",  // Replace with your AWS Secret Key
             region: "us-east-2"
         });
 
@@ -54,8 +56,7 @@
                     Key: objectKey
                 };
 
-                const response = await fetch("https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/mqtt_data.csv");
-                const text = await response.text();
+                const data = await s3.getObject(params).promise();
                 const text = data.Body.toString("utf-8");
                 console.log("RAW CSV Data:\n", text);
 
@@ -141,7 +142,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: { title: { display: true, text: "Sample Index" } },
                     y: { title: { display: true, text: "Value" } }
