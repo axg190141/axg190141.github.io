@@ -40,7 +40,7 @@
             try {
                 console.log("Fetching CSV using fetch()...");
 
-                const response = await fetch("https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/testing123/mqtt_data.csv");
+                const response = await fetch("https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/mqtt_data.csv");
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
