@@ -37,33 +37,74 @@
     
     <script>
         async function fetchData() {
-            try {
-                const response = await fetch("https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/mqtt_data.csv");
-                const text = await response.text();
-                const rows = text.trim().split("\n").slice(1);
-                return rows.map(row => {
-                    const [temperature, ph] = row.split(",").map(parseFloat);
-                    return { temperature, ph };
-                });
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                return [];
-            }
+    try {
+        console.log("Fetching data...");
+        const response = await fetch("https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/mqtt_data.csv");
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
+        const text = await response.text();
+        console.log("Raw CSV Data:\n", text);  // Debugging: Log the entire CSV file content
+
+        const rows = text.trim().split("\n");
+        console.log("Rows after splitting:\n", rows); // Debugging: Log each row
+
+        if (rows.length <= 1) {
+            throw new Error("CSV does not contain enough data.");
+        }
+
+        // Extract data and parse numbers
+        const formattedData = rows.slice(1).map(row => {
+            const values = row.split(",");
+            console.log("Row Values:", values); // Debugging: Check the split values
+            if (values.length < 2) {
+                console.warn("Skipping malformed row:", row);
+                return null;
+            }
+
+            const [temperature, ph] = values.map(parseFloat);
+            if (isNaN(temperature) || isNaN(ph)) {
+                console.warn("Skipping row with NaN values:", row);
+                return null;
+            }
+
+            return { temperature, ph };
+        }).filter(entry => entry !== null); // Remove any invalid rows
+
+        console.log("Parsed Data:", formattedData); // Debugging: Show final parsed array
+        return formattedData;
+
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return []; // Return empty array to prevent further errors
+    }
+}
         async function updateData() {
             const data = await fetchData();
-            if (data.length > 0) {
-                const latest = data[data.length - 1];
-                document.getElementById("latest-temp").textContent = `Temperature: ${latest.temperature.toFixed(2)} °C`;
-                document.getElementById("latest-ph").textContent = `pH: ${latest.ph.toFixed(2)}`;
-
-                chart.data.labels = data.map((_, i) => i);
-                chart.data.datasets[0].data = data.map(d => d.temperature);
-                chart.data.datasets[1].data = data.map(d => d.ph);
-                chart.update();
+            
+            if (!data || data.length === 0) {
+                console.error("No valid data available.");
+                return;
             }
+        
+            const latest = data[data.length - 1];
+        
+            if (!latest || latest.ph === undefined || latest.temperature === undefined) {
+                console.error("Latest data is missing or corrupted:", latest);
+                return;
+            }
+        
+            document.getElementById("latest-temp").textContent = `Temperature: ${latest.temperature.toFixed(2)} °C`;
+            document.getElementById("latest-ph").textContent = `pH: ${latest.ph.toFixed(2)}`;
+        
+            chart.data.labels = data.map((_, i) => i);
+            chart.data.datasets[0].data = data.map(d => d.temperature);
+            chart.data.datasets[1].data = data.map(d => d.ph);
+            chart.update();
         }
+
 
         const ctx = document.getElementById("dataChart").getContext("2d");
         const chart = new Chart(ctx, {
