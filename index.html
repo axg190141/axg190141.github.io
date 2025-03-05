@@ -38,11 +38,7 @@
     <script>
         async function fetchData() {
             try {
-                const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-                const dataUrl = "https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/mqtt_data.csv";
-
-                const response = await fetch(proxyUrl + dataUrl);
-
+                const response = await fetch("https://mqtt-excel-storage.s3.us-east-2.amazonaws.com/mqtt_data.csv");
                 const text = await response.text();
                 const rows = text.trim().split("\n").slice(1);
                 return rows.map(row => {
