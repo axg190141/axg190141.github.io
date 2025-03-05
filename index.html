@@ -32,8 +32,6 @@
     <div class="card">
         <p id="latest-temp">Temperature: -- °C</p>
         <p id="latest-ph">pH: --</p>
-        <p id="latest-turbidity">Turbidity: -- NTU</p>
-        <p id="latest-time">Timestamp: --</p>
     </div>
     <canvas id="dataChart" width="800" height="400"></canvas>
     
@@ -62,22 +60,20 @@
                     const values = row.split(",");
                     console.log("Row Values:", values);
 
-                    if (values.length < 4) {
+                    if (values.length < 2) {
                         console.warn("Skipping malformed row:", row);
                         return null;
                     }
 
-                    const timestamp = values[0];
-                    const temperature = parseFloat(values[1]);
-                    const ph = parseFloat(values[2]);
-                    const turbidity = parseFloat(values[3]);
+                    const temperature = parseFloat(values[0]);
+                    const ph = parseFloat(values[1]);
 
-                    if (isNaN(temperature) || isNaN(ph) || isNaN(turbidity)) {
+                    if (isNaN(temperature) || isNaN(ph)) {
                         console.warn("Skipping row with NaN values:", row);
                         return null;
                     }
 
-                    return { timestamp, temperature, ph, turbidity };
+                    return { temperature, ph };
                 }).filter(entry => entry !== null);
 
                 console.log("Parsed Data:", formattedData);
@@ -99,20 +95,17 @@
 
             const latest = data[data.length - 1];
 
-            if (!latest || latest.ph === undefined || latest.temperature === undefined || latest.turbidity === undefined || latest.timestamp === undefined) {
+            if (!latest || latest.ph === undefined || latest.temperature === undefined) {
                 console.error("Latest data is missing or corrupted:", latest);
                 return;
             }
 
             document.getElementById("latest-temp").textContent = `Temperature: ${latest.temperature.toFixed(2)} °C`;
             document.getElementById("latest-ph").textContent = `pH: ${latest.ph.toFixed(2)}`;
-            document.getElementById("latest-turbidity").textContent = `Turbidity: ${latest.turbidity.toFixed(2)} NTU`;
-            document.getElementById("latest-time").textContent = `Timestamp: ${latest.timestamp}`;
 
-            chart.data.labels = data.map(d => d.timestamp);
+            chart.data.labels = data.map((_, i) => i);
             chart.data.datasets[0].data = data.map(d => d.temperature);
             chart.data.datasets[1].data = data.map(d => d.ph);
-            chart.data.datasets[2].data = data.map(d => d.turbidity);
             chart.update();
         }
 
@@ -133,12 +126,6 @@
                         borderColor: "#0ea5e9",
                         data: [],
                         fill: false,
-                    },
-                    {
-                        label: "Turbidity (NTU)",
-                        borderColor: "#22c55e",
-                        data: [],
-                        fill: false,
                     }
                 ]
             },
@@ -146,7 +133,7 @@
                 responsive: true,
                 maintainAspectRatio: true,
                 scales: {
-                    x: { title: { display: true, text: "Timestamp" } },
+                    x: { title: { display: true, text: "Sample Index" } },
                     y: { title: { display: true, text: "Value" } }
                 }
             }
@@ -157,3 +144,5 @@
     </script>
 </body>
 </html>
+
+
